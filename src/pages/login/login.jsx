@@ -3,7 +3,7 @@ import React, {Component} from "react"
 import { Form, Input, Button, Checkbox } from 'antd';
 
 import './login.less'
-import logo from './images/logo.png'
+import logo from '../../assets/images/logo.png'
 import { reqLogin, reqAddUser } from "../../api";
 
 export default class Login extends Component {
