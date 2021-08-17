@@ -41,7 +41,7 @@ class LeftNav extends Component {
     render () {
         const path = this.props.location.pathname
         return (
-            <div>
+            <div className='left'>
                 <div className='left-nav'>
                     <Link to='/' className='left-nav-header'>
                         <img src={logo} alt="logo" />
@@ -50,8 +50,7 @@ class LeftNav extends Component {
                 </div>
 
                 {/* 根据 menu 的数据数组动态生成对应的标签数组 */}
-                <Menu mode="inline" theme="dark" >
-                {/* <Menu mode="inline" theme="dark" selectedKeys={[path]} defaultOpenKeys={[openKey]} > */}
+                <Menu mode="inline" theme="dark" selectedKeys={[path]} >
                     { this.getMenuNode(menuList) }
                 </Menu>
             </div>
