@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 // import { Form, Icon, Input, Button } from 'antd';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox, message } from 'antd';
 
 import './login.less'
 import logo from '../../assets/images/logo.png'
@@ -8,24 +8,86 @@ import { reqLogin, reqAddUser } from "../../api";
 
 export default class Login extends Component {
     render () {
-        const onFinish = async(values) => {
+        const onFinish = (values) => {
             console.log('登录成功:', values);
             const {username, password} = values
             try{
-                const response = await reqLogin(username, password)
-                console.log('请求成功', response.data)
+                // 对所有表单字段进行检验
+                this.props.form.validateFields(async (err, values) => {
+                    // 检验成功
+                    if (!err) {
+                        console.log('提交登陆的ajax请求', values)
+                        // 请求登陆
+                        const {username, password} = values
+                        const result = await reqLogin(username, password)
+                        console.log('请求成功', result)
+                        if (result.status===0) { // 登陆成功
+                            // 提示登陆成功
+                            message.success('登陆成功@ q')
+                
+                            // 保存user
+                            // const user = result.data
+                            // memoryUtils.user = user // 保存在内存中
+                            // storageUtils.saveUser(user) // 保存到local中
+                
+                            // 跳转到管理界面 (不需要再回退回到登陆)
+                            this.props.history.replace('/')
+                
+                        } else { // 登陆失败
+                            // 提示错误信息
+                            message.error(result.msg)
+                        }
+                    } else {
+                        console.log('检验失败!')
+                    }
+                });
             } catch(error) {
                 console.log('请求失败', error.message)
             }
-            // reqLogin(username, password).then(response => {
-            //     console.log('成功了', response.data)
-            // }).catch(error => {
-            //     console.log('失败了', error)
-            // })
         };
         const onFinishFailed = (errorInfo) => {
             console.log('登录失败:', errorInfo);
         };
+        // const onFinish = async(values) => {
+        //     console.log('登录成功:', values);
+        //     const {username, password} = values
+        //     try{
+        //         // 对所有表单字段进行检验
+        //         this.props.form.validateFields(async (err, values) => {
+        //             // 检验成功
+        //             if (!err) {
+        //                 console.log('提交登陆的ajax请求', values)
+        //                 // 请求登陆
+        //                 const {username, password} = values
+        //                 const result = await reqLogin(username, password)
+        //                 console.log('请求成功', result)
+        //                 if (result.status===0) { // 登陆成功
+        //                     // 提示登陆成功
+        //                     message.success('登陆成功@ q')
+                
+        //                     // 保存user
+        //                     // const user = result.data
+        //                     // memoryUtils.user = user // 保存在内存中
+        //                     // storageUtils.saveUser(user) // 保存到local中
+                
+        //                     // 跳转到管理界面 (不需要再回退回到登陆)
+        //                     this.props.history.replace('/')
+                
+        //                 } else { // 登陆失败
+        //                     // 提示错误信息
+        //                     message.error(result.msg)
+        //                 }
+        //             } else {
+        //                 console.log('检验失败!')
+        //             }
+        //         });
+        //     } catch(error) {
+        //         console.log('请求失败', error.message)
+        //     }
+        // };
+        // const onFinishFailed = (errorInfo) => {
+        //     console.log('登录失败:', errorInfo);
+        // };
 
         return (
             <div className="login">
@@ -59,7 +121,6 @@ export default class Login extends Component {
                         <Form.Item
                             label="Password"
                             name="password"
-
                             rules={[ 
                                 {required: true, whitespace:true, message: '密码必须输入!'},
                                 {min:4, message:'密码至少4位!'},
@@ -82,26 +143,6 @@ export default class Login extends Component {
                             <Button type="primary" htmlType="submit"> 登录 </Button>
                         </Form.Item>
                     </Form>
-                    {/* <Form onSubmit={this.handleSubmit} className="login-form">
-                        <Form.Item>
-                            <Input
-                            prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            placeholder="Username"
-                            />,
-                        </Form.Item>
-                        <Form.Item>
-                            <Input
-                            prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            type="password"
-                            placeholder="Password"
-                            />,
-                        </Form.Item>
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit" className="login-form-button">
-                                登录
-                            </Button>
-                        </Form.Item>
-                    </Form> */}
                 </section>
             </div>
         )
